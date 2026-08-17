@@ -1,0 +1,115 @@
+.notifications-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--lumen-space-md);
+}
+
+.hint-small {
+  font-size: 12px;
+  color: var(--lumen-on-surface-variant);
+  margin: 0;
+}
+
+.section-card {
+  padding: var(--lumen-space-md);
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: var(--lumen-space-sm);
+  margin-bottom: var(--lumen-space-md);
+  padding-bottom: var(--lumen-space-sm);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.section-icon--primary { color: var(--lumen-primary); }
+.section-icon--secondary { color: var(--lumen-secondary); }
+.section-icon--error { color: var(--lumen-error); }
+
+.section-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--lumen-on-surface);
+}
+
+.alert-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--lumen-space-md);
+  padding: var(--lumen-space-sm) 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  flex-wrap: wrap;
+}
+
+.alert-row:last-child {
+  border-bottom: none;
+}
+
+.alert-info {
+  flex: 1;
+  min-width: 200px;
+}
+
+.alert-title {
+  font-size: 14px;
+  color: var(--lumen-on-surface);
+  font-weight: 500;
+}
+
+.alert-description {
+  font-size: 12px;
+  color: var(--lumen-on-surface-variant);
+  margin-top: 2px;
+}
+
+.channel-toggles {
+  display: flex;
+  gap: var(--lumen-space-md);
+}
+
+.channel-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--lumen-on-surface-variant);
+  cursor: pointer;
+}
+
+.channel-toggle input {
+  accent-color: var(--lumen-primary);
+  cursor: pointer;
+}
+
+.channel-toggle--disabled {
+  opacity: 0.5;
+}
+
+.channel-toggle--disabled input {
+  cursor: not-allowed;
+}
+
+.save-banner {
+  display: flex;
+  align-items: center;
+  gap: var(--lumen-space-xs);
+  background: rgba(78, 222, 163, 0.1);
+  border: 1px solid rgba(78, 222, 163, 0.3);
+  color: var(--lumen-secondary);
+  border-radius: var(--lumen-radius);
+  padding: var(--lumen-space-sm) var(--lumen-space-md);
+  font-size: 13px;
+}
+
+.icon-sm {
+  font-size: 18px;
+}
+
+.form-actions {
+  display: flex;
+  gap: var(--lumen-space-sm);
+  justify-content: flex-end;
+}

@@ -1,0 +1,17 @@
+<div class="settings-wrapper">
+  <div class="page-header">
+    <h1 class="page-title">Settings</h1>
+    <p class="page-subtitle">Manage your account and application preferences</p>
+  </div>
+
+  <nav class="tab-bar">
+    <a routerLink="profile" routerLinkActive="tab--active" class="tab">Profile</a>
+    <a routerLink="security" routerLinkActive="tab--active" class="tab">Security</a>
+    <a routerLink="notifications" routerLinkActive="tab--active" class="tab">Notifications</a>
+    <a routerLink="general" routerLinkActive="tab--active" class="tab">General</a>
+  </nav>
+
+  <div class="settings-content">
+    <router-outlet></router-outlet>
+  </div>
+</div>

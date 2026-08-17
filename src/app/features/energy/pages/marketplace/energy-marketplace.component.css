@@ -1,0 +1,117 @@
+.marketplace-wrapper {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: var(--lumen-space-md) var(--lumen-space-md) var(--lumen-space-xl);
+}
+
+.page-header {
+  margin-bottom: var(--lumen-space-lg);
+}
+
+.page-title {
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--lumen-on-surface);
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.page-subtitle {
+  font-size: 14px;
+  color: var(--lumen-on-surface-variant);
+  margin: 4px 0 0;
+}
+
+.tiers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--lumen-space-lg);
+}
+
+.tier-card {
+  padding: var(--lumen-space-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+}
+
+.tier-card--popular {
+  border-color: rgba(51, 204, 69, 0.4);
+}
+
+.popular-badge {
+  position: absolute;
+  top: var(--lumen-space-sm);
+  right: var(--lumen-space-sm);
+  background: var(--lumen-primary-container);
+  color: white;
+  font-family: var(--lumen-font-body);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  padding: 4px var(--lumen-space-sm);
+  border-radius: var(--lumen-radius-full);
+}
+
+.tier-icon {
+  color: var(--lumen-tertiary);
+  font-size: 32px;
+  margin-bottom: var(--lumen-space-sm);
+}
+
+.tier-amount {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  margin-bottom: var(--lumen-space-xs);
+}
+
+.tier-number {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--lumen-on-surface);
+  font-family: var(--lumen-font-mono);
+}
+
+.tier-unit {
+  font-size: 14px;
+  color: var(--lumen-on-surface-variant);
+}
+
+.tier-name {
+  font-family: var(--lumen-font-body);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--lumen-on-surface-variant);
+  margin-bottom: var(--lumen-space-md);
+}
+
+.tier-price {
+  font-size: 36px;
+  font-weight: 600;
+  color: var(--lumen-primary);
+  margin-bottom: var(--lumen-space-md);
+  letter-spacing: -0.02em;
+}
+
+.tier-duration {
+  display: flex;
+  align-items: center;
+  gap: var(--lumen-space-xs);
+  font-size: 12px;
+  color: var(--lumen-on-surface-variant);
+  margin-bottom: var(--lumen-space-lg);
+}
+
+.icon-sm {
+  font-size: 16px;
+}
+
+.tier-buy-btn {
+  width: 100%;
+}

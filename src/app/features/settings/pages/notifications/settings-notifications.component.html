@@ -1,0 +1,43 @@
+<div class="notifications-page">
+  <p class="hint-small">
+    Preferences are stored locally for this demo only — there is no notification-preferences endpoint on the backend yet.
+  </p>
+
+  <div class="card-surface section-card" *ngFor="let section of sections(); let si = index">
+    <div class="section-header">
+      <span class="material-symbols-outlined section-icon" [class]="'section-icon--' + section.accent">{{ section.icon }}</span>
+      <h3 class="section-title">{{ section.title }}</h3>
+    </div>
+
+    <div class="alert-row" *ngFor="let row of section.rows; let ri = index">
+      <div class="alert-info">
+        <div class="alert-title">{{ row.title }}</div>
+        <div class="alert-description">{{ row.description }}</div>
+      </div>
+      <div class="channel-toggles">
+        <label class="channel-toggle" [class.channel-toggle--disabled]="row.locked">
+          <input type="checkbox" [checked]="row.email" [disabled]="row.locked" (change)="toggle(si, ri, 'email')" />
+          Email
+        </label>
+        <label class="channel-toggle" [class.channel-toggle--disabled]="row.locked">
+          <input type="checkbox" [checked]="row.push" [disabled]="row.locked" (change)="toggle(si, ri, 'push')" />
+          Push
+        </label>
+        <label class="channel-toggle">
+          <input type="checkbox" [checked]="row.sms" (change)="toggle(si, ri, 'sms')" />
+          SMS
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <div class="save-banner" *ngIf="saved()">
+    <span class="material-symbols-outlined icon-sm">check_circle</span>
+    Preferences saved locally
+  </div>
+
+  <div class="form-actions">
+    <button class="btn-secondary">Cancel</button>
+    <button class="btn-primary" (click)="save()">Save Preferences</button>
+  </div>
+</div>

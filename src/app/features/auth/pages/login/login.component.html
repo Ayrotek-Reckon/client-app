@@ -1,0 +1,56 @@
+<div class="login-container">
+  <div class="ambient-glow"></div>
+  <div class="glass-panel login-card">
+    <div class="brand-block">
+      <img src="assets/images/logo.svg" alt="Reckon" class="brand-logo" />
+      <p class="brand-subtitle">Sign in to the GPU Energy Market</p>
+    </div>
+
+    <div class="error-banner" *ngIf="errorMessage()">
+      {{ errorMessage() }}
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+      <div class="form-group">
+        <label for="identifier">Email or Username</label>
+        <input
+          id="identifier"
+          type="text"
+          class="input-obsidian"
+          formControlName="identifier"
+          placeholder="name@company.com"
+        />
+        <span class="field-error" *ngIf="identifierError">{{ identifierError }}</span>
+      </div>
+
+      <div class="form-group">
+        <div class="label-row">
+          <label for="password">Password</label>
+        </div>
+        <input
+          id="password"
+          type="password"
+          class="input-obsidian"
+          formControlName="password"
+          placeholder="••••••••"
+        />
+        <span class="field-error" *ngIf="passwordError">{{ passwordError }}</span>
+      </div>
+
+      <button
+        type="submit"
+        class="btn-primary submit-btn"
+        [disabled]="!loginForm.valid || isLoading()"
+      >
+        {{ isLoading() ? 'Signing in...' : 'Sign In' }}
+      </button>
+    </form>
+
+    <div class="footer-link">
+      <p>
+        Don't have an account?
+        <a routerLink="/auth/register">Request Access</a>
+      </p>
+    </div>
+  </div>
+</div>

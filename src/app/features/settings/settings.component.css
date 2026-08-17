@@ -1,0 +1,64 @@
+.settings-wrapper {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: var(--lumen-space-md) var(--lumen-space-md) var(--lumen-space-xl);
+}
+
+.page-header {
+  margin-bottom: var(--lumen-space-lg);
+}
+
+.page-title {
+  margin: 0;
+  font-size: 28px;
+  color: var(--lumen-on-surface);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.page-subtitle {
+  margin: 4px 0 0;
+  color: var(--lumen-on-surface-variant);
+  font-size: 14px;
+}
+
+.tab-bar {
+  display: flex;
+  gap: var(--lumen-space-lg);
+  border-bottom: 1px solid var(--lumen-outline-variant);
+  margin-bottom: var(--lumen-space-lg);
+}
+
+.tab {
+  padding: var(--lumen-space-sm) 0;
+  color: var(--lumen-on-surface-variant);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.tab:hover {
+  color: var(--lumen-on-surface);
+}
+
+.tab--active {
+  color: var(--lumen-primary);
+  border-bottom-color: var(--lumen-primary);
+}
+
+.settings-content {
+  min-height: 300px;
+}
+
+@media (max-width: 768px) {
+  .tab-bar {
+    gap: var(--lumen-space-md);
+    overflow-x: auto;
+  }
+
+  .tab {
+    white-space: nowrap;
+  }
+}

@@ -1,0 +1,138 @@
+<div class="gpu-detail-container">
+  <div class="detail-header">
+    <a routerLink="/gpu-monitoring" class="btn-back">← Back to List</a>
+    <h2>Node Details</h2>
+  </div>
+
+  <div class="loading-state" *ngIf="isLoading()">
+    <app-loading-spinner [visible]="true" message="Loading node details..."></app-loading-spinner>
+  </div>
+
+  <div class="error-state" *ngIf="error()">
+    <button (click)="onRefresh()" class="btn-retry">{{ error() }} - Retry</button>
+  </div>
+
+  <div class="detail-content" *ngIf="node()">
+    <div class="detail-card">
+      <div class="card-header">
+        <div>
+          <h3>{{ node()!.hardwareId }}</h3>
+          <p>{{ node()!.model || 'Unknown model' }} · fw {{ node()!.fwVersion || 'N/A' }}</p>
+        </div>
+        <app-gpu-status-badge [status]="displayStatus"></app-gpu-status-badge>
+      </div>
+
+      <div class="card-body">
+        <div class="info-grid">
+          <div class="info-item">
+            <label>Node ID</label>
+            <span>{{ node()!.id }}</span>
+          </div>
+          <div class="info-item">
+            <label>Hardware ID</label>
+            <span>{{ node()!.hardwareId }}</span>
+          </div>
+          <div class="info-item">
+            <label>Power Range</label>
+            <span>{{ node()!.minPowerW ?? '?' }}W – {{ node()!.maxPowerW ?? '?' }}W</span>
+          </div>
+          <div class="info-item">
+            <label>Status</label>
+            <span>{{ node()!.status }}</span>
+          </div>
+          <div class="info-item">
+            <label>Created</label>
+            <span>{{ node()!.createdAt | date:'medium' }}</span>
+          </div>
+          <div class="info-item">
+            <label>Approved</label>
+            <span>{{ node()!.approvedAt ? (node()!.approvedAt | date:'medium') : 'Not approved' }}</span>
+          </div>
+          <div class="info-item">
+            <label>Last Heartbeat</label>
+            <span>{{ node()!.lastHeartbeatAt ? (node()!.lastHeartbeatAt | date:'medium') : 'Never' }}</span>
+          </div>
+        </div>
+
+        <div class="gpu-inventory" *ngIf="node()!.gpus.length > 0">
+          <h4>GPU Inventory</h4>
+          <div class="gpu-inventory-table">
+            <div class="gpu-row gpu-row-header">
+              <div class="col">GPU ID</div>
+              <div class="col">Name</div>
+              <div class="col">TDP (W)</div>
+              <div class="col">Compute</div>
+            </div>
+            <div class="gpu-row" *ngFor="let gpu of node()!.gpus">
+              <div class="col">{{ gpu.gpuId }}</div>
+              <div class="col">{{ gpu.name }}</div>
+              <div class="col">{{ gpu.tdpW ?? 'N/A' }}</div>
+              <div class="col">{{ gpu.computeValue ?? 'N/A' }} {{ gpu.computeUnit || '' }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-footer">
+        <button
+          *ngIf="node()!.status === 'PENDING'"
+          (click)="onApprove()"
+          class="btn-action btn-approve"
+        >
+          Approve Node
+        </button>
+        <button
+          *ngIf="node()!.status !== 'REVOKED'"
+          (click)="onRevoke()"
+          class="btn-action btn-revoke"
+        >
+          Revoke Node
+        </button>
+        <button (click)="onRefresh()" class="btn-action btn-refresh">Refresh Data</button>
+      </div>
+
+      <div class="power-adjust" *ngIf="node()!.status === 'APPROVED'">
+        <h4>Queue Power Setpoint</h4>
+        <p class="power-hint">
+          Sets a total wattage target delivered to the rig on its next heartbeat.
+          The client distributes it per GPU.
+        </p>
+        <div class="power-form">
+          <input
+            type="number"
+            [ngModel]="powerSetpoint()"
+            (ngModelChange)="powerSetpoint.set($event)"
+            [min]="node()!.minPowerW ?? 1"
+            [max]="node()!.maxPowerW ?? 9999"
+            placeholder="Watts"
+            class="power-input"
+          />
+          <button (click)="onAdjustPower()" class="btn-action btn-power">Queue Setpoint</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Telemetry Section -->
+    <div class="metrics-section" *ngIf="telemetry().length > 0">
+      <h4>Recent Telemetry</h4>
+      <div class="metrics-table">
+        <div class="metrics-row metrics-header">
+          <div class="col">Received</div>
+          <div class="col">Status</div>
+          <div class="col">System Temp (°C)</div>
+          <div class="col">GPU Readings</div>
+        </div>
+        <div class="metrics-row" *ngFor="let record of telemetry() | slice:0:20">
+          <div class="col">{{ record.receivedAt | date:'HH:mm:ss' }}</div>
+          <div class="col">{{ record.status }}</div>
+          <div class="col">{{ record.systemTempC ?? 'N/A' }}</div>
+          <div class="col gpu-readings">
+            <span *ngFor="let gt of record.gpuTelemetry" class="gpu-reading">
+              {{ gt.gpuId }}: {{ gt.loadPct ?? '?' }}% / {{ gt.tempC ?? '?' }}°C / {{ gt.powerDrawW ?? '?' }}W
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

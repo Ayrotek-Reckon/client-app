@@ -1,0 +1,144 @@
+<div class="user-list-wrapper">
+  <!-- Header -->
+  <div class="user-header">
+    <div class="header-content">
+      <div>
+        <h1 class="page-title">👥 User Management</h1>
+        <p class="page-subtitle">Manage system users and permissions</p>
+      </div>
+      <button [routerLink]="['/users/create']" class="btn-create">
+        ➕ Create User
+      </button>
+    </div>
+  </div>
+
+  <!-- Search and Filters -->
+  <div class="search-container">
+    <div class="search-box">
+      <input
+        type="text"
+        placeholder="Search users by name, email, or role..."
+        (keyup)="onSearch($event)"
+        class="search-input"
+      />
+      <button class="btn-search">🔍</button>
+    </div>
+    <div class="filter-controls">
+      <select (change)="onFilterChange($event)" class="filter-select">
+        <option value="">All Roles</option>
+        <option value="admin">Admin</option>
+        <option value="manager">Manager</option>
+        <option value="user">User</option>
+        <option value="viewer">Viewer</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-container" *ngIf="isLoading()">
+    <div class="loader">
+      <div class="loader-spin"></div>
+      <p>Loading users...</p>
+    </div>
+  </div>
+
+  <!-- Error -->
+  <div class="error-banner" *ngIf="error()">
+    <div class="error-icon">⚠️</div>
+    <div class="error-text">
+      <strong>Failed to load users</strong><br>
+      {{ error() }}
+    </div>
+    <button (click)="onRetry()" class="btn-retry">Try Again</button>
+  </div>
+
+  <!-- Users Table -->
+  <div class="table-container" *ngIf="users().length > 0 && !isLoading()">
+    <div class="users-count">
+      Showing {{ users().length }} users
+    </div>
+    <table class="users-table">
+      <thead>
+        <tr>
+          <th class="col-name">Name</th>
+          <th class="col-email">Email</th>
+          <th class="col-role">Role</th>
+          <th class="col-status">Status</th>
+          <th class="col-created">Created</th>
+          <th class="col-actions">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of users()" class="user-row">
+          <td class="col-name">
+            <div class="user-info">
+              <div class="user-avatar">{{ (user.firstName.charAt(0) + user.lastName.charAt(0)).toUpperCase() }}</div>
+              <div>
+                <div class="user-name">{{ user.firstName }} {{ user.lastName }}</div>
+              </div>
+            </div>
+          </td>
+          <td class="col-email">{{ user.email }}</td>
+          <td class="col-role">
+            <span class="role-badge" [ngClass]="'role-' + user.roles[0]">
+              {{ user.roles[0] | titlecase }}
+            </span>
+          </td>
+          <td class="col-status">
+            <span class="status-badge" [ngClass]="user.isActive ? 'status-active' : 'status-inactive'">
+              {{ user.isActive ? 'Active' : 'Inactive' }}
+            </span>
+          </td>
+          <td class="col-created">{{ user.createdAt | date: 'MMM d, y' }}</td>
+          <td class="col-actions">
+            <button
+              [routerLink]="['/users', user.id]"
+              class="btn-action btn-edit"
+              title="Edit user"
+            >
+              ✏️
+            </button>
+            <button
+              (click)="onDelete(user.id)"
+              class="btn-action btn-delete"
+              title="Delete user"
+            >
+              🗑️
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination-container" *ngIf="totalPages() > 1">
+    <button
+      (click)="onPreviousPage()"
+      [disabled]="currentPage() === 1"
+      class="btn-pagination"
+    >
+      ← Previous
+    </button>
+    <div class="pagination-info">
+      Page {{ currentPage() }} of {{ totalPages() }}
+    </div>
+    <button
+      (click)="onNextPage()"
+      [disabled]="currentPage() === totalPages()"
+      class="btn-pagination"
+    >
+      Next →
+    </button>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-container" *ngIf="users().length === 0 && !isLoading()">
+    <div class="empty-icon">👤</div>
+    <div class="empty-text">
+      <h3>No Users Found</h3>
+      <p>Create your first user to get started</p>
+    </div>
+    <button [routerLink]="['/users/create']" class="btn-create-empty">Create User</button>
+  </div>
+</div>

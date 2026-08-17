@@ -1,0 +1,142 @@
+<div class="dashboard-wrapper">
+  <!-- Header -->
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Dashboard</h1>
+      <p class="page-subtitle">Node fleet and HiveOS farm overview</p>
+    </div>
+    <button class="btn-secondary" (click)="onRefresh()" [disabled]="isLoading()">
+      <span class="material-symbols-outlined icon-sm">refresh</span>
+      Refresh
+    </button>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-state" *ngIf="isLoading()">
+    <div class="spinner"></div>
+    <p>Loading dashboard data...</p>
+  </div>
+
+  <!-- Error -->
+  <div class="error-banner" *ngIf="error()">
+    <span class="material-symbols-outlined">error</span>
+    <div class="error-text">
+      <strong>Unable to load dashboard</strong>
+      <p>{{ error() }}</p>
+    </div>
+    <button class="btn-secondary" (click)="onRefresh()">Retry</button>
+  </div>
+
+  <div class="dashboard-content" *ngIf="stats() && !isLoading()">
+    <!-- KPI Grid -->
+    <div class="kpi-grid">
+      <div class="card-surface kpi-card">
+        <div class="kpi-header">
+          <span class="kpi-label">Total Nodes</span>
+          <span class="material-symbols-outlined kpi-icon text-primary">dns</span>
+        </div>
+        <div class="kpi-value">{{ stats()!.totalNodes }}</div>
+        <div class="kpi-sub">Registered rig nodes</div>
+      </div>
+
+      <div class="card-surface kpi-card">
+        <div class="kpi-header">
+          <span class="kpi-label">Online Nodes</span>
+          <span class="material-symbols-outlined kpi-icon text-secondary pulse-icon">check_circle</span>
+        </div>
+        <div class="kpi-value text-secondary">{{ stats()!.onlineNodes }}</div>
+        <div class="kpi-sub" *ngIf="stats()!.totalNodes > 0">
+          {{ (stats()!.onlineNodes / stats()!.totalNodes * 100) | number:'1.0-0' }}% of fleet
+        </div>
+      </div>
+
+      <div class="card-surface kpi-card">
+        <div class="kpi-header">
+          <span class="kpi-label">Pending Approval</span>
+          <span class="material-symbols-outlined kpi-icon text-tertiary">hourglass_empty</span>
+        </div>
+        <div class="kpi-value">{{ stats()!.pendingNodes }}</div>
+        <div class="kpi-sub">Awaiting admin review</div>
+      </div>
+
+      <div class="card-surface kpi-card">
+        <div class="kpi-header">
+          <span class="kpi-label">GPUs Registered</span>
+          <span class="material-symbols-outlined kpi-icon text-primary">memory</span>
+        </div>
+        <div class="kpi-value">{{ stats()!.totalNodeGpus }}</div>
+        <div class="kpi-sub">Across all nodes</div>
+      </div>
+    </div>
+
+    <div class="content-grid">
+      <!-- HiveOS Farm Overview -->
+      <div class="card-surface panel">
+        <div class="panel-header">
+          <h2 class="panel-title">HiveOS Farms</h2>
+          <a routerLink="/mining" class="panel-link">Manage Mining →</a>
+        </div>
+        <div class="farm-stats">
+          <div class="farm-stat-row">
+            <span class="farm-stat-label">Farms</span>
+            <span class="farm-stat-value">{{ stats()!.farmCount }}</span>
+          </div>
+          <div class="farm-stat-row">
+            <span class="farm-stat-label">Workers Online</span>
+            <span class="farm-stat-value">{{ stats()!.onlineHiveWorkers }} / {{ stats()!.totalHiveWorkers }}</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" [style.width.%]="stats()!.totalHiveWorkers > 0 ? (stats()!.onlineHiveWorkers / stats()!.totalHiveWorkers * 100) : 0"></div>
+          </div>
+          <div class="farm-stat-row">
+            <span class="farm-stat-label">GPUs Online</span>
+            <span class="farm-stat-value">{{ stats()!.onlineHiveGpus }} / {{ stats()!.totalHiveGpus }}</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill progress-fill--green" [style.width.%]="stats()!.totalHiveGpus > 0 ? (stats()!.onlineHiveGpus / stats()!.totalHiveGpus * 100) : 0"></div>
+          </div>
+          <div class="farm-stat-row">
+            <span class="farm-stat-label">Power Draw</span>
+            <span class="farm-stat-value">{{ stats()!.hivePowerDrawW | number:'1.0-0' }} W</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Links -->
+      <div class="card-surface panel">
+        <div class="panel-header">
+          <h2 class="panel-title">Quick Actions</h2>
+        </div>
+        <div class="quick-links">
+          <a routerLink="/energy" class="quick-link">
+            <span class="material-symbols-outlined quick-link-icon text-tertiary">bolt</span>
+            <div>
+              <div class="quick-link-title">Buy Energy</div>
+              <div class="quick-link-sub">Browse energy packages</div>
+            </div>
+            <span class="material-symbols-outlined quick-link-arrow">arrow_forward</span>
+          </a>
+          <a routerLink="/wallet" class="quick-link">
+            <span class="material-symbols-outlined quick-link-icon text-primary">account_balance_wallet</span>
+            <div>
+              <div class="quick-link-title">Manage Wallets</div>
+              <div class="quick-link-sub">Payout destinations</div>
+            </div>
+            <span class="material-symbols-outlined quick-link-arrow">arrow_forward</span>
+          </a>
+          <a routerLink="/mining" class="quick-link">
+            <span class="material-symbols-outlined quick-link-icon text-secondary">memory</span>
+            <div>
+              <div class="quick-link-title">Mining Strategy</div>
+              <div class="quick-link-sub">Start or stop mining</div>
+            </div>
+            <span class="material-symbols-outlined quick-link-arrow">arrow_forward</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Alerts -->
+    <app-alerts [alerts]="alerts()"></app-alerts>
+  </div>
+</div>

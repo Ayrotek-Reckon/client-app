@@ -1,0 +1,81 @@
+<div class="gpu-list-wrapper">
+  <!-- Header -->
+  <div class="gpu-header">
+    <div class="header-content">
+      <div>
+        <h1 class="page-title">🖥️ Node Monitoring</h1>
+        <p class="page-subtitle">Rig node registration, telemetry and power control</p>
+      </div>
+      <button (click)="onRefresh()" class="btn-refresh" [disabled]="isLoading()">
+        🔄 Refresh Nodes
+      </button>
+    </div>
+  </div>
+
+  <!-- Status Summary -->
+  <div class="status-summary">
+    <div class="status-card healthy">
+      <div class="status-number">{{ onlineCount() }}</div>
+      <div class="status-label">Online</div>
+      <div class="status-bar"></div>
+    </div>
+    <div class="status-card warning">
+      <div class="status-number">{{ pendingCount() }}</div>
+      <div class="status-label">Pending</div>
+      <div class="status-bar"></div>
+    </div>
+    <div class="status-card critical">
+      <div class="status-number">{{ revokedCount() }}</div>
+      <div class="status-label">Revoked</div>
+      <div class="status-bar"></div>
+    </div>
+    <div class="status-card offline">
+      <div class="status-number">{{ offlineCount() }}</div>
+      <div class="status-label">Offline</div>
+      <div class="status-bar"></div>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-container" *ngIf="isLoading()">
+    <div class="loader">
+      <div class="loader-spin"></div>
+      <p>Loading nodes...</p>
+    </div>
+  </div>
+
+  <!-- Error -->
+  <div class="error-banner" *ngIf="error()">
+    <div class="error-icon">⚠️</div>
+    <div class="error-text">
+      <strong>Failed to load nodes</strong><br>
+      {{ error() }}
+    </div>
+    <button (click)="onRefresh()" class="btn-retry">Try Again</button>
+  </div>
+
+  <!-- Nodes Grid -->
+  <div class="devices-container" *ngIf="nodes().length > 0 && !isLoading()">
+    <div class="devices-count">
+      Showing {{ nodes().length }} Nodes
+    </div>
+    <div class="devices-grid">
+      <app-gpu-device-card
+        *ngFor="let node of nodes()"
+        [node]="node"
+        (approve)="onApprove(node.id)"
+        (revoke)="onRevoke(node.id)"
+      ></app-gpu-device-card>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-container" *ngIf="nodes().length === 0 && !isLoading()">
+    <div class="empty-icon">📭</div>
+    <div class="empty-text">
+      <h3>No Nodes Found</h3>
+      <p>No rig nodes have registered with this gateway yet</p>
+    </div>
+    <button (click)="onRefresh()" class="btn-refresh-empty">Refresh</button>
+  </div>
+</div>

@@ -1,0 +1,62 @@
+<div class="workers-wrapper">
+  <a routerLink="/hiveos" class="back-link">
+    <span class="material-symbols-outlined icon-sm">arrow_back</span>
+    Back to Farms
+  </a>
+
+  <div class="page-header">
+    <h1 class="page-title">Workers</h1>
+    <button class="btn-secondary" (click)="loadWorkers()" [disabled]="isLoading()">
+      <span class="material-symbols-outlined icon-sm">refresh</span>
+      Refresh
+    </button>
+  </div>
+
+  <div class="error-banner" *ngIf="error()">
+    {{ error() }}
+    <button class="btn-secondary" (click)="loadWorkers()">Retry</button>
+  </div>
+
+  <div class="loading-state" *ngIf="isLoading()">
+    <div class="spinner"></div>
+    <p>Loading workers...</p>
+  </div>
+
+  <div class="card-surface table-card" *ngIf="!isLoading() && workers().length > 0">
+    <table class="lumen-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Status</th>
+          <th>GPUs</th>
+          <th>Power</th>
+          <th>IP Addresses</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let worker of workers()">
+          <td>{{ worker.name }}</td>
+          <td>
+            <span
+              class="status-badge"
+              [class.status-badge--success]="worker.stats?.online"
+              [class.status-badge--neutral]="!worker.stats?.online"
+              [class.status-badge--error]="worker.stats?.overheated"
+            >
+              {{ worker.stats?.online ? 'Online' : 'Offline' }}
+              <span *ngIf="worker.stats?.overheated">· Overheated</span>
+            </span>
+          </td>
+          <td class="mono">{{ worker.stats?.gpus_online ?? 0 }} / {{ (worker.stats?.gpus_online ?? 0) + (worker.stats?.gpus_offline ?? 0) }}</td>
+          <td class="mono">{{ worker.stats?.power_draw ?? 'N/A' }} W</td>
+          <td class="mono">{{ (worker.ip_addresses || []).join(', ') || 'N/A' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card-surface empty-state" *ngIf="!isLoading() && workers().length === 0 && !error()">
+    <span class="material-symbols-outlined empty-icon">memory</span>
+    <p>No workers found for this farm</p>
+  </div>
+</div>

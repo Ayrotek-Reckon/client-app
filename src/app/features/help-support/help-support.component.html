@@ -1,0 +1,58 @@
+<div class="help-wrapper">
+  <!-- Hero search -->
+  <div class="hero">
+    <h1 class="hero-title">How can we help?</h1>
+    <div class="search-wrap">
+      <span class="material-symbols-outlined">search</span>
+      <input
+        class="search-input"
+        [ngModel]="searchTerm()"
+        (ngModelChange)="searchTerm.set($event)"
+        placeholder="Search for help (e.g., 'API keys', 'wallet connection')"
+      />
+    </div>
+  </div>
+
+  <div class="content-grid">
+    <div class="main-column">
+      <!-- Categories -->
+      <div class="categories-grid">
+        <div class="card-surface category-card" *ngFor="let cat of categories">
+          <div class="category-icon-box">
+            <span class="material-symbols-outlined">{{ cat.icon }}</span>
+          </div>
+          <h3 class="category-title">{{ cat.title }}</h3>
+          <p class="category-description">{{ cat.description }}</p>
+        </div>
+      </div>
+
+      <!-- Popular articles -->
+      <div class="card-surface articles-card">
+        <h2 class="articles-title">Popular Articles</h2>
+        <ul class="articles-list">
+          <li class="article-row" *ngFor="let article of filteredArticles()">
+            <span>{{ article.title }}</span>
+            <span class="material-symbols-outlined icon-sm">chevron_right</span>
+          </li>
+          <li class="article-row article-row--empty" *ngIf="filteredArticles().length === 0">
+            No articles match "{{ searchTerm() }}".
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Contact CTA -->
+    <div class="card-surface contact-card">
+      <h2 class="contact-title">Still need help?</h2>
+      <p class="contact-description">Our support team is available 24/7 to help with any questions about your account, mining operations or transactions.</p>
+      <button class="btn-primary contact-btn">
+        <span class="material-symbols-outlined icon-sm">chat</span>
+        Live Chat
+      </button>
+      <button class="btn-secondary contact-btn">
+        <span class="material-symbols-outlined icon-sm">mail</span>
+        Email Support
+      </button>
+    </div>
+  </div>
+</div>

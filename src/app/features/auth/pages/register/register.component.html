@@ -1,0 +1,90 @@
+<div class="register-container">
+  <div class="ambient-glow"></div>
+  <div class="glass-panel register-card">
+    <div class="brand-block">
+      <img src="assets/images/logo.svg" alt="Reckon" class="brand-logo" />
+      <p class="brand-subtitle">Request access to the GPU Energy Market</p>
+    </div>
+
+    <div class="error-banner" *ngIf="errorMessage()">
+      {{ errorMessage() }}
+    </div>
+
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input
+          id="email"
+          type="email"
+          class="input-obsidian"
+          formControlName="email"
+          placeholder="name@company.com"
+          [class.is-invalid]="isFieldInvalid('email')"
+        />
+        <span class="field-error" *ngIf="isFieldInvalid('email')">
+          Please enter a valid email address
+        </span>
+      </div>
+
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input
+          id="username"
+          type="text"
+          class="input-obsidian"
+          formControlName="username"
+          placeholder="Choose a username"
+          [class.is-invalid]="isFieldInvalid('username')"
+        />
+        <span class="field-error" *ngIf="isFieldInvalid('username')">
+          Username must be 3-30 characters
+        </span>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input
+          id="password"
+          type="password"
+          class="input-obsidian"
+          formControlName="password"
+          placeholder="Min 8 characters"
+          [class.is-invalid]="isFieldInvalid('password')"
+        />
+        <span class="field-error" *ngIf="isFieldInvalid('password')">
+          Password must be at least 8 characters
+        </span>
+      </div>
+
+      <div class="form-group">
+        <label for="confirmPassword">Confirm Password</label>
+        <input
+          id="confirmPassword"
+          type="password"
+          class="input-obsidian"
+          formControlName="confirmPassword"
+          placeholder="Repeat your password"
+          [class.is-invalid]="passwordMismatch"
+        />
+        <span class="field-error" *ngIf="passwordMismatch">
+          Passwords do not match
+        </span>
+      </div>
+
+      <button
+        type="submit"
+        class="btn-primary submit-btn"
+        [disabled]="registerForm.invalid || isLoading()"
+      >
+        {{ isLoading() ? 'Creating account...' : 'Create Account' }}
+      </button>
+    </form>
+
+    <div class="footer-link">
+      <p>
+        Already have an account?
+        <a routerLink="/auth/login">Sign in here</a>
+      </p>
+    </div>
+  </div>
+</div>

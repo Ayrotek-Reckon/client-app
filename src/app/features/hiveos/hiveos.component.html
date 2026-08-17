@@ -1,0 +1,24 @@
+<div class="hiveos-wrapper">
+  <div class="hiveos-header">
+    <h1 class="page-title">⛏️ HiveOS Integration</h1>
+    <p class="page-subtitle">Manage your HiveOS farms, workers, and wallets</p>
+  </div>
+
+  <div class="hiveos-container">
+    <nav class="tab-navigation">
+      <a routerLink="." routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="tab-link">
+        🏢 Farms
+      </a>
+      <a routerLink="workers" routerLinkActive="active" class="tab-link">
+        🖥️ Workers
+      </a>
+      <a routerLink="wallets" routerLinkActive="active" class="tab-link">
+        💰 Wallets
+      </a>
+    </nav>
+
+    <div class="tab-content">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>

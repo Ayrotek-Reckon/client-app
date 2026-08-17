@@ -1,0 +1,67 @@
+<div class="farms-wrapper">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">HiveOS Farms</h1>
+      <p class="page-subtitle">All farms accessible with your connected HiveOS account.</p>
+    </div>
+    <button class="btn-secondary" (click)="loadFarms()" [disabled]="isLoading()">
+      <span class="material-symbols-outlined icon-sm">refresh</span>
+      Refresh
+    </button>
+  </div>
+
+  <div class="error-banner" *ngIf="error()">
+    {{ error() }}
+    <button class="btn-secondary" (click)="loadFarms()">Retry</button>
+  </div>
+
+  <div class="loading-state" *ngIf="isLoading()">
+    <div class="spinner"></div>
+    <p>Loading farms...</p>
+  </div>
+
+  <div class="farms-grid" *ngIf="!isLoading() && farms().length > 0">
+    <div class="card-surface farm-card" *ngFor="let farm of farms()">
+      <div class="farm-card-header">
+        <h3 class="farm-name">{{ farm.name }}</h3>
+        <span class="status-badge" [class.status-badge--error]="farm.locked" [class.status-badge--neutral]="!farm.locked">
+          {{ farm.locked ? 'Locked' : (farm.role || 'Owner') }}
+        </span>
+      </div>
+
+      <div class="farm-stats">
+        <div class="stat-row">
+          <span class="stat-label">Workers</span>
+          <span class="stat-value">{{ farm.workers_count ?? 0 }} ({{ farm.stats?.workers_online ?? 0 }} online)</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Rigs</span>
+          <span class="stat-value">{{ farm.rigs_count ?? 0 }}</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">ASICs</span>
+          <span class="stat-value">{{ farm.asics_count ?? 0 }}</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">GPUs</span>
+          <span class="stat-value">{{ farm.stats?.gpus_online ?? 0 }} / {{ farm.stats?.gpus_total ?? 0 }}</span>
+        </div>
+        <div class="stat-row" *ngIf="farm.stats?.power_draw">
+          <span class="stat-label">Power Draw</span>
+          <span class="stat-value">{{ farm.stats?.power_draw }} W</span>
+        </div>
+      </div>
+
+      <div class="farm-actions">
+        <a [routerLink]="['/hiveos/farms', farm.id, 'workers']" class="btn-secondary farm-action-btn">Workers</a>
+        <a routerLink="/wallet" class="btn-secondary farm-action-btn">Wallets</a>
+        <a routerLink="/mining" class="btn-secondary farm-action-btn">Mining</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-surface empty-state" *ngIf="!isLoading() && farms().length === 0 && !error()">
+    <span class="material-symbols-outlined empty-icon">dns</span>
+    <p>No farms found for this HiveOS account</p>
+  </div>
+</div>

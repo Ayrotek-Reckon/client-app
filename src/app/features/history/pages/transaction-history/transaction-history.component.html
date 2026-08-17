@@ -1,0 +1,89 @@
+<div class="history-wrapper">
+  <div class="page-header">
+    <h1 class="page-title">Transaction History</h1>
+    <p class="page-subtitle">
+      Review your comprehensive ledger of mining payouts, energy acquisitions, and wallet transfers.
+    </p>
+  </div>
+
+  <!-- Controls -->
+  <div class="card-surface controls-bar">
+    <div class="search-wrap">
+      <span class="material-symbols-outlined icon-sm">search</span>
+      <input
+        class="search-input"
+        [ngModel]="searchTerm()"
+        (ngModelChange)="onSearchChange($event)"
+        placeholder="Search transactions by ID or description..."
+      />
+    </div>
+    <select class="input-obsidian filter-select" [ngModel]="typeFilter()" (ngModelChange)="onFilterChange($event)">
+      <option value="all">All Operations</option>
+      <option value="mining_payout">Mining Payouts</option>
+      <option value="energy_purchase">Energy Purchase</option>
+      <option value="withdrawal">Withdrawal</option>
+    </select>
+  </div>
+
+  <!-- Table -->
+  <div class="card-surface table-card">
+    <table class="lumen-table">
+      <thead>
+        <tr>
+          <th>Date &amp; Time</th>
+          <th>Operation</th>
+          <th class="align-right">Amount (USD)</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let entry of pagedEntries()">
+          <td class="mono">{{ formatDate(entry.timestamp) }}</td>
+          <td>
+            <div class="operation-cell">
+              <span class="material-symbols-outlined icon-sm" [class.text-secondary]="entry.amount > 0" [class.text-tertiary]="entry.type === 'energy_purchase'" [class.text-primary]="entry.type === 'withdrawal'">
+                {{ iconFor(entry.type) }}
+              </span>
+              <div>
+                <div class="operation-label">{{ entry.label }}</div>
+                <div class="operation-ref mono">{{ entry.reference }}</div>
+              </div>
+            </div>
+          </td>
+          <td class="align-right mono" [class.text-secondary]="entry.amount > 0">
+            {{ entry.amount > 0 ? '+' : '' }}{{ entry.amount | number:'1.2-2' }}
+          </td>
+          <td>
+            <span
+              class="status-badge"
+              [class.status-badge--success]="entry.status === 'completed'"
+              [class.status-badge--warning]="entry.status === 'processing'"
+              [class.status-badge--error]="entry.status === 'failed'"
+            >
+              {{ entry.status }}
+            </span>
+          </td>
+        </tr>
+        <tr *ngIf="pagedEntries().length === 0">
+          <td colspan="4" class="empty-row">No transactions match your filters.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination" *ngIf="filtered().length > 0">
+    <span class="pagination-info">
+      Showing {{ (page() - 1) * 10 + 1 }} to {{ Math.min(page() * 10, filtered().length) }} of {{ filtered().length }} entries
+    </span>
+    <div class="pagination-controls">
+      <button class="page-btn" (click)="prevPage()" [disabled]="page() === 1">
+        <span class="material-symbols-outlined icon-sm">chevron_left</span>
+      </button>
+      <span class="page-current">{{ page() }} / {{ totalPages() }}</span>
+      <button class="page-btn" (click)="nextPage()" [disabled]="page() === totalPages()">
+        <span class="material-symbols-outlined icon-sm">chevron_right</span>
+      </button>
+    </div>
+  </div>
+</div>

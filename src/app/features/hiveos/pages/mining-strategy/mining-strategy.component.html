@@ -1,0 +1,245 @@
+<div class="mining-wrapper">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Mining Strategy</h1>
+      <p class="page-subtitle">Build, save and run HiveOS flight-sheet strategies from live catalogs.</p>
+    </div>
+    <button class="btn-secondary stop-button" [disabled]="actionInFlight() || !farm()" (click)="stopMining()">
+      <span class="material-symbols-outlined icon-sm">stop_circle</span>
+      Stop Mining
+    </button>
+  </div>
+
+  <div class="farm-banner" *ngIf="farm() as f">
+    <span class="material-symbols-outlined">dns</span>
+    <span>Operating on farm <strong>{{ f.name }}</strong></span>
+  </div>
+  <div class="loading-banner" *ngIf="farmsLoading() && !farm()">Loading farm...</div>
+  <div class="error-banner" *ngIf="farmsError()">{{ farmsError() }}</div>
+
+  <div class="action-message action-message--success" *ngIf="actionSuccess()">
+    <span class="material-symbols-outlined">check_circle</span>
+    {{ actionSuccess() }}
+  </div>
+  <div class="action-message action-message--error" *ngIf="actionError()">
+    <span class="material-symbols-outlined">error</span>
+    {{ actionError() }}
+  </div>
+
+  <div class="running-summary" *ngIf="activeStrategyState() as running">
+    <span class="material-symbols-outlined">radio_button_checked</span>
+    <div>
+      <strong>{{ running.strategyName }}</strong>
+      <p>Running on {{ running.flightSheetName }} since {{ running.startedAt | date:'short' }}</p>
+    </div>
+  </div>
+
+  <div class="strategy-layout">
+    <section class="builder-panel">
+      <div class="section-heading">
+        <div>
+          <h2>Strategy Builder</h2>
+          <p>{{ selectedWorkerCount() }} worker{{ selectedWorkerCount() === 1 ? '' : 's' }} targeted</p>
+        </div>
+        <span class="status-badge status-badge--info" *ngIf="catalogLoading() || farmDataLoading()">Syncing</span>
+      </div>
+
+      <div class="form-grid">
+        <label class="form-field form-field--wide">
+          <span>Name</span>
+          <input
+            class="input-obsidian"
+            type="text"
+            [ngModel]="strategyName()"
+            (ngModelChange)="updateStrategyName($event)"
+            placeholder="Auto-generated from coin, pool and miner"
+          />
+        </label>
+
+        <label class="form-field">
+          <span>Coin</span>
+          <select
+            class="input-obsidian"
+            [ngModel]="selectedCoin()"
+            (ngModelChange)="selectCoin($event)"
+            [disabled]="catalogLoading()"
+          >
+            <option value="" disabled>Select coin</option>
+            <option *ngFor="let coin of coins()" [value]="coin.coin">
+              {{ coin.coin }}{{ coin.name ? ' - ' + coin.name : '' }}
+            </option>
+          </select>
+        </label>
+
+        <label class="form-field">
+          <span>Algorithm</span>
+          <select
+            class="input-obsidian"
+            [ngModel]="selectedAlgo()"
+            (ngModelChange)="selectAlgo($event)"
+            [disabled]="catalogLoading() || selectedCoinAlgos().length === 0"
+          >
+            <option value="" disabled>{{ selectedCoinAlgos().length === 0 ? 'No algorithm' : 'Select algorithm' }}</option>
+            <option *ngFor="let algo of selectedCoinAlgos()" [value]="algo">{{ algo }}</option>
+          </select>
+        </label>
+
+        <label class="form-field">
+          <span>Miner</span>
+          <select
+            class="input-obsidian"
+            [ngModel]="selectedMiner()"
+            (ngModelChange)="selectMiner($event)"
+            [disabled]="catalogLoading()"
+          >
+            <option value="" disabled>Select miner</option>
+            <option *ngFor="let miner of miners()" [value]="miner.id">
+              {{ miner.name }}
+            </option>
+          </select>
+        </label>
+
+        <label class="form-field">
+          <span>Pool</span>
+          <select
+            class="input-obsidian"
+            [ngModel]="selectedPool()"
+            (ngModelChange)="selectPool($event)"
+            [disabled]="poolsLoading() || pools().length === 0"
+          >
+            <option value="" disabled>{{ poolsLoading() ? 'Loading pools...' : 'Select pool' }}</option>
+            <option *ngFor="let pool of pools()" [value]="pool.pool">{{ pool.pool }}</option>
+          </select>
+        </label>
+
+        <label class="form-field">
+          <span>Wallet</span>
+          <select
+            class="input-obsidian"
+            [ngModel]="selectedWalletId()"
+            (ngModelChange)="selectedWalletId.set($event)"
+            [disabled]="farmDataLoading() || compatibleWallets().length === 0"
+          >
+            <option [ngValue]="null" disabled>
+              {{ compatibleWallets().length === 0 ? 'No wallet for coin' : 'Select wallet' }}
+            </option>
+            <option *ngFor="let wallet of compatibleWallets()" [ngValue]="wallet.id">
+              {{ wallet.name }} - {{ shortAddress(wallet.wal) }}
+            </option>
+          </select>
+        </label>
+
+        <label class="form-field form-field--wide">
+          <span>Workers</span>
+          <select
+            class="input-obsidian worker-select"
+            multiple
+            [ngModel]="selectedWorkerIds()"
+            (ngModelChange)="updateWorkerSelection($event)"
+            [disabled]="farmDataLoading() || workers().length === 0"
+          >
+            <option *ngFor="let worker of workers()" [ngValue]="worker.id">
+              {{ worker.name }}{{ worker.stats?.online ? ' online' : ' offline' }}
+            </option>
+          </select>
+        </label>
+      </div>
+
+      <div class="meta-strip">
+        <div>
+          <span>Algorithm</span>
+          <strong>{{ selectedAlgo() || 'Unavailable' }}</strong>
+        </div>
+        <div>
+          <span>Pool URL</span>
+          <strong *ngIf="selectedPoolTemplate() as pool">
+            {{ poolUrlPreview(pool) }}
+          </strong>
+          <strong *ngIf="!selectedPoolTemplate()">Unavailable</strong>
+        </div>
+        <a
+          class="pool-link"
+          *ngIf="selectedPoolStatusUrl() as statusUrl"
+          [href]="statusUrl"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <span class="material-symbols-outlined icon-sm">open_in_new</span>
+          Pool dashboard
+        </a>
+        <label class="ssl-toggle">
+          <input type="checkbox" [ngModel]="poolSsl()" (ngModelChange)="poolSsl.set($event)" />
+          SSL
+        </label>
+      </div>
+
+      <div class="builder-warning" *ngIf="selectedCoin() && compatibleWallets().length === 0">
+        <span class="material-symbols-outlined icon-sm">warning</span>
+        Add a {{ selectedCoin() }} wallet before saving or starting this strategy.
+      </div>
+
+      <div class="builder-actions">
+        <button class="btn-secondary" [disabled]="!canSubmit() || actionInFlight()" (click)="saveStrategy()">
+          <span class="material-symbols-outlined icon-sm">save</span>
+          {{ actionInFlight() ? 'Saving...' : 'Save Strategy' }}
+        </button>
+        <button class="btn-primary" [disabled]="!canSubmit() || actionInFlight()" (click)="startNow()">
+          <span class="material-symbols-outlined icon-sm">play_circle</span>
+          {{ actionInFlight() ? 'Starting...' : 'Start Now' }}
+        </button>
+      </div>
+    </section>
+
+    <section class="saved-panel">
+      <div class="section-heading">
+        <div>
+          <h2>Saved Strategies</h2>
+          <p>{{ strategies().length }} saved</p>
+        </div>
+      </div>
+
+      <div class="saved-empty" *ngIf="!strategiesLoading() && strategies().length === 0">
+        No saved strategies yet.
+      </div>
+
+      <div class="strategy-list" *ngIf="strategies().length > 0">
+        <article class="strategy-item" *ngFor="let strategy of strategies()">
+          <div class="strategy-main">
+            <div>
+              <h3>{{ strategy.name }}</h3>
+              <p>{{ strategy.coin }}{{ strategy.algo ? ' / ' + strategy.algo : '' }} / {{ strategy.pool }} / {{ strategy.miner }}</p>
+            </div>
+            <span class="status-badge status-badge--success" *ngIf="activeStrategyId() === strategy.id">
+              Running
+            </span>
+          </div>
+
+          <div class="strategy-details">
+            <span>{{ strategy.workerIds?.length || workers().length }} worker target</span>
+            <span>{{ strategy.poolSsl ? 'SSL pool' : 'Standard pool' }}</span>
+            <span>{{ shortAddress(strategy.walletAddress) }}</span>
+          </div>
+
+          <div class="strategy-actions">
+            <a
+              class="icon-action"
+              *ngIf="poolStatusUrl(strategy.pool, strategy.coin, strategy.walletAddress) as statusUrl"
+              [href]="statusUrl"
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Open pool dashboard"
+            >
+              <span class="material-symbols-outlined">open_in_new</span>
+            </a>
+            <button class="icon-action" title="Run strategy" [disabled]="actionInFlight()" (click)="runStrategy(strategy)">
+              <span class="material-symbols-outlined">play_arrow</span>
+            </button>
+            <button class="icon-action icon-action--danger" title="Delete strategy" (click)="deleteStrategy(strategy)">
+              <span class="material-symbols-outlined">delete</span>
+            </button>
+          </div>
+        </article>
+      </div>
+    </section>
+  </div>
+</div>

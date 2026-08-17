@@ -1,0 +1,36 @@
+<div class="payment-container">
+  <h2>Complete Payment</h2>
+
+  <div class="order-summary">
+    <p><strong>Amount:</strong> ${{ amount() | number: '1.2-2' }}</p>
+    <p><strong>Currency:</strong> {{ currency() }}</p>
+  </div>
+
+  <!-- Stripe Card Element Container -->
+  <div id="card-element" class="stripe-input"></div>
+
+  <!-- Error Message -->
+  <div class="error-message" *ngIf="state().error">
+    ⚠️ {{ state().error }}
+  </div>
+
+  <!-- Payment Button -->
+  <button
+    (click)="confirmPayment()"
+    [disabled]="state().processing"
+    class="pay-button"
+  >
+    <span *ngIf="state().processing">Processing...</span>
+    <span *ngIf="!state().processing">Pay ${{ amount() | number: '1.2-2' }}</span>
+  </button>
+
+  <!-- Success State -->
+  <div class="success-message" *ngIf="state().success">
+    ✓ Payment successful! Redirecting...
+  </div>
+
+  <!-- Test Info -->
+  <div class="test-info">
+    <p><small>Test Card: 4242 4242 4242 4242 | Any expiry | Any CVC</small></p>
+  </div>
+</div>

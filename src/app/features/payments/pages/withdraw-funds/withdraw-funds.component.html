@@ -1,0 +1,105 @@
+<div class="withdraw-wrapper">
+  <div class="page-header">
+    <a routerLink="/wallet" class="back-link">
+      <span class="material-symbols-outlined icon-sm">arrow_back</span>
+      Back to Wallet
+    </a>
+    <h1 class="page-title">Withdrawal</h1>
+    <span class="spacer"></span>
+  </div>
+
+  <!-- Stepper -->
+  <div class="stepper">
+    <div class="step" [class.step--active]="step() === 1">
+      <span class="step-circle">1</span>
+      <span class="step-label">Details</span>
+    </div>
+    <div class="step-divider"></div>
+    <div class="step" [class.step--active]="step() === 2">
+      <span class="step-circle">2</span>
+      <span class="step-label">Review</span>
+    </div>
+  </div>
+
+  <!-- Step 1: Details -->
+  <div class="card-surface form-card" *ngIf="step() === 1">
+    <div class="balance-section">
+      <span class="balance-label">Available Balance</span>
+      <div class="balance-value">
+        ${{ availableBalance | number:'1.2-2' }} <span class="balance-unit">USDC</span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Destination Wallet</label>
+      <select class="input-obsidian" [ngModel]="destinationWalletId()" (ngModelChange)="destinationWalletId.set($event)">
+        <option *ngFor="let w of wallets()" [value]="w.id">{{ w.name }} ({{ w.wal }})</option>
+      </select>
+      <p class="no-wallets" *ngIf="wallets().length === 0">No wallets configured yet — add one on the Wallets page first.</p>
+    </div>
+
+    <div class="form-group">
+      <label>Amount</label>
+      <div class="amount-input-wrap">
+        <span class="dollar-prefix">$</span>
+        <input
+          type="number"
+          class="input-obsidian amount-input"
+          [ngModel]="amount()"
+          (ngModelChange)="amount.set($event)"
+          placeholder="0.00"
+        />
+        <button class="max-btn" (click)="setMaxAmount()">Max</button>
+      </div>
+    </div>
+
+    <div class="summary-info-box">
+      <div class="info-row">
+        <span class="material-symbols-outlined icon-sm">local_gas_station</span>
+        Network Fee: ${{ networkFee.toFixed(2) }} USDC
+      </div>
+      <div class="info-row">
+        <span class="material-symbols-outlined icon-sm">schedule</span>
+        Est. Arrival: ~2 Minutes
+      </div>
+    </div>
+
+    <div class="receive-row">
+      <span>You will receive</span>
+      <span class="receive-amount">${{ receiveAmount() | number:'1.2-2' }}</span>
+    </div>
+
+    <button class="btn-primary review-btn" [disabled]="!canReview()" (click)="goToReview()">
+      Review Withdrawal
+    </button>
+    <a routerLink="/wallet" class="btn-secondary cancel-btn">Cancel</a>
+  </div>
+
+  <!-- Step 2: Review -->
+  <div class="card-surface form-card" *ngIf="step() === 2">
+    <h2 class="review-title">Confirm Withdrawal</h2>
+
+    <div class="review-row">
+      <span>Destination</span>
+      <span>{{ destinationWallet()?.name }}</span>
+    </div>
+    <div class="review-row">
+      <span>Amount</span>
+      <span>${{ (amount() ?? 0) | number:'1.2-2' }}</span>
+    </div>
+    <div class="review-row">
+      <span>Network Fee</span>
+      <span>${{ networkFee.toFixed(2) }}</span>
+    </div>
+    <div class="summary-divider"></div>
+    <div class="review-row review-row--total">
+      <span>You will receive</span>
+      <span>${{ receiveAmount() | number:'1.2-2' }}</span>
+    </div>
+
+    <button class="btn-primary review-btn" [disabled]="submitting()" (click)="confirmWithdrawal()">
+      {{ submitting() ? 'Processing...' : 'Confirm Withdrawal' }}
+    </button>
+    <button class="btn-secondary cancel-btn" (click)="goBackToDetails()" [disabled]="submitting()">Back</button>
+  </div>
+</div>

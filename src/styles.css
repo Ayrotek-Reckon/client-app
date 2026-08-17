@@ -1,1 +1,345 @@
-/* You can add global styles to this file, and also import other style files */
+/* ==========================================================================
+   Lumen Design System — global tokens + shared utility classes
+   Source: design-client/lumen/DESIGN.md
+   ========================================================================== */
+
+:root {
+  /* Color tokens (copied 1:1 from DESIGN.md) */
+  --lumen-surface: #12131a;
+  --lumen-surface-dim: #12131a;
+  --lumen-surface-bright: #383940;
+  --lumen-surface-container-lowest: #0c0e14;
+  --lumen-surface-container-low: #1a1b22;
+  --lumen-surface-container: #1e1f26;
+  --lumen-surface-container-high: #282a31;
+  --lumen-surface-container-highest: #33343c;
+  --lumen-on-surface: #e2e1eb;
+  --lumen-on-surface-variant: #c2c6d6;
+  --lumen-outline: #8c909f;
+  --lumen-outline-variant: #424754;
+  --lumen-primary: #4ade80;
+  --lumen-on-primary: #00210f;
+  --lumen-primary-container: #33cc45;
+  --lumen-on-primary-container: #ffffff;
+  --lumen-secondary: #4edea3;
+  --lumen-on-secondary: #003824;
+  --lumen-secondary-container: #00a572;
+  --lumen-tertiary: #ffb95f;
+  --lumen-on-tertiary: #472a00;
+  --lumen-tertiary-container: #ca8100;
+  --lumen-error: #ffb4ab;
+  --lumen-on-error: #690005;
+  --lumen-error-container: #93000a;
+  --lumen-background: #0a0a0a;
+  --lumen-on-background: #e2e1eb;
+
+  /* Obsidian surface strategy (from the mockups' literal hex overrides) */
+  --lumen-bg: #0a0a0a;
+  --lumen-card-bg: #111111;
+  --lumen-card-border: rgba(255, 255, 255, 0.1);
+  --lumen-card-border-hover: rgba(255, 255, 255, 0.2);
+  --lumen-input-bg: #0f0f0f;
+  --lumen-accent-green: #10b981;
+
+  /* Typography */
+  --lumen-font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --lumen-font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  /* Spacing (8px linear scale) */
+  --lumen-space-xs: 4px;
+  --lumen-space-sm: 8px;
+  --lumen-space-md: 16px;
+  --lumen-space-lg: 24px;
+  --lumen-space-xl: 40px;
+  --lumen-space-2xl: 64px;
+
+  /* Radius */
+  --lumen-radius-sm: 0.25rem;
+  --lumen-radius: 0.5rem;
+  --lumen-radius-md: 0.75rem;
+  --lumen-radius-lg: 1rem;
+  --lumen-radius-xl: 1.5rem;
+  --lumen-radius-full: 9999px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: var(--lumen-bg);
+  color: var(--lumen-on-background);
+  font-family: var(--lumen-font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+}
+
+/* ==========================================================================
+   Shared surface / card
+   ========================================================================== */
+
+.card-surface {
+  background-color: var(--lumen-card-bg);
+  border: 1px solid var(--lumen-card-border);
+  border-radius: var(--lumen-radius-lg);
+  transition: border-color 0.2s ease;
+}
+
+.card-surface:hover {
+  border-color: var(--lumen-card-border-hover);
+}
+
+.glass-panel {
+  background: rgba(17, 17, 17, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* ==========================================================================
+   Buttons
+   ========================================================================== */
+
+.btn-primary {
+  background: linear-gradient(180deg, #33cc45 0%, #16a34a 100%);
+  color: white;
+  border: none;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  border-radius: var(--lumen-radius);
+  font-family: var(--lumen-font-body);
+  font-size: 14px;
+  font-weight: 600;
+  padding: var(--lumen-space-sm) var(--lumen-space-lg);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--lumen-space-sm);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: linear-gradient(180deg, #4ade80 0%, #33cc45 100%);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background-color: transparent;
+  border: 1px solid var(--lumen-card-border);
+  color: var(--lumen-on-surface);
+  border-radius: var(--lumen-radius);
+  font-family: var(--lumen-font-body);
+  font-size: 14px;
+  font-weight: 600;
+  padding: var(--lumen-space-sm) var(--lumen-space-lg);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--lumen-space-sm);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.btn-secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.glass-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--lumen-on-surface);
+  border-radius: var(--lumen-radius);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.glass-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* ==========================================================================
+   Inputs
+   ========================================================================== */
+
+.input-obsidian {
+  background-color: var(--lumen-input-bg);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--lumen-on-surface);
+  border-radius: var(--lumen-radius);
+  padding: var(--lumen-space-sm) var(--lumen-space-md);
+  font-family: var(--lumen-font-body);
+  font-size: 16px;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.input-obsidian::placeholder {
+  color: var(--lumen-outline);
+}
+
+.input-obsidian:focus {
+  border-color: #33cc45;
+  box-shadow: 0 0 0 2px rgba(51, 204, 69, 0.2);
+  outline: none;
+}
+
+/* ==========================================================================
+   Chips / status badges
+   ========================================================================== */
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--lumen-space-xs);
+  padding: var(--lumen-space-xs) var(--lumen-space-md);
+  border-radius: var(--lumen-radius-full);
+  font-family: var(--lumen-font-body);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--lumen-space-xs);
+  padding: 2px var(--lumen-space-sm);
+  border-radius: var(--lumen-radius-sm);
+  font-family: var(--lumen-font-body);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+}
+
+.status-badge--success {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--lumen-secondary);
+  border-color: rgba(16, 185, 129, 0.2);
+}
+
+.status-badge--warning {
+  background: rgba(255, 185, 95, 0.1);
+  color: var(--lumen-tertiary);
+  border-color: rgba(255, 185, 95, 0.2);
+}
+
+.status-badge--error {
+  background: rgba(255, 180, 171, 0.1);
+  color: var(--lumen-error);
+  border-color: rgba(255, 180, 171, 0.2);
+}
+
+.status-badge--neutral {
+  background: var(--lumen-surface-container-highest);
+  color: var(--lumen-on-surface-variant);
+  border-color: var(--lumen-outline-variant);
+}
+
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--lumen-secondary);
+  animation: lumen-pulse 2s ease-in-out infinite;
+}
+
+@keyframes lumen-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(0.85); }
+}
+
+/* ==========================================================================
+   Tables
+   ========================================================================== */
+
+.lumen-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.lumen-table thead tr {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.lumen-table th {
+  padding: var(--lumen-space-sm);
+  font-family: var(--lumen-font-body);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: var(--lumen-on-surface-variant);
+  text-transform: uppercase;
+}
+
+.lumen-table tbody tr {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  transition: background-color 0.2s ease;
+}
+
+.lumen-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.lumen-table td {
+  padding: var(--lumen-space-sm);
+  font-size: 14px;
+  color: var(--lumen-on-surface);
+}
+
+/* ==========================================================================
+   Material Symbols baseline (so ligature icons render at a sane default size)
+   ========================================================================== */
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  vertical-align: middle;
+  line-height: 1;
+  user-select: none;
+}
+
+.material-symbols-outlined.filled {
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+/* ==========================================================================
+   Scrollbar (obsidian theme)
+   ========================================================================== */
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--lumen-surface-container-lowest);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--lumen-surface-container-highest);
+  border-radius: var(--lumen-radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--lumen-outline);
+}

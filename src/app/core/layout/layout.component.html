@@ -1,0 +1,123 @@
+<!-- Mobile top bar -->
+<header class="mobile-topbar">
+  <button class="icon-btn" (click)="toggleMobileNav()" aria-label="Toggle navigation">
+    <span class="material-symbols-outlined">menu</span>
+  </button>
+  <div class="mobile-brand">
+    <img src="assets/images/logo.svg" alt="Reckon" class="mobile-logo" />
+  </div>
+  <div class="w-10"></div>
+</header>
+
+<!-- Mobile nav overlay -->
+<div class="mobile-nav-overlay" *ngIf="mobileNavOpen()" (click)="closeMobileNav()"></div>
+
+<!-- Sidebar -->
+<nav class="sidebar" [class.sidebar--open]="mobileNavOpen()">
+  <div class="brand">
+    <img src="assets/images/logo.svg" alt="Reckon" class="brand-logo" />
+  </div>
+
+  <ul class="nav-list">
+    <li>
+      <a routerLink="/dashboard" routerLinkActive="nav-link--active" (click)="closeMobileNav()" class="nav-link">
+        <span class="material-symbols-outlined">dashboard</span>
+        <span>Dashboard</span>
+      </a>
+    </li>
+    <li>
+      <a routerLink="/energy" routerLinkActive="nav-link--active" (click)="closeMobileNav()" class="nav-link">
+        <span class="material-symbols-outlined">bolt</span>
+        <span>Energy</span>
+      </a>
+    </li>
+    <li *ngIf="isOperator">
+      <a routerLink="/mining" routerLinkActive="nav-link--active" (click)="closeMobileNav()" class="nav-link">
+        <span class="material-symbols-outlined">memory</span>
+        <span>Mining</span>
+      </a>
+    </li>
+    <li *ngIf="isOperator">
+      <a routerLink="/gpu-monitoring" routerLinkActive="nav-link--active" (click)="closeMobileNav()" class="nav-link">
+        <span class="material-symbols-outlined">dns</span>
+        <span>Nodes</span>
+      </a>
+    </li>
+    <li>
+      <a routerLink="/wallet" routerLinkActive="nav-link--active" (click)="closeMobileNav()" class="nav-link">
+        <span class="material-symbols-outlined">account_balance_wallet</span>
+        <span>Cüzdan</span>
+      </a>
+    </li>
+    <li>
+      <a routerLink="/payments" routerLinkActive="nav-link--active" (click)="closeMobileNav()" class="nav-link">
+        <span class="material-symbols-outlined">payments</span>
+        <span>Satın Al</span>
+      </a>
+    </li>
+    <li *ngIf="isAdmin">
+      <a routerLink="/history" routerLinkActive="nav-link--active" (click)="closeMobileNav()" class="nav-link">
+        <span class="material-symbols-outlined">history</span>
+        <span>History</span>
+      </a>
+    </li>
+    <li *ngIf="isAdmin">
+      <a routerLink="/users" routerLinkActive="nav-link--active" (click)="closeMobileNav()" class="nav-link">
+        <span class="material-symbols-outlined">group</span>
+        <span>Users</span>
+      </a>
+    </li>
+    <li>
+      <a routerLink="/settings" routerLinkActive="nav-link--active" (click)="closeMobileNav()" class="nav-link">
+        <span class="material-symbols-outlined">settings</span>
+        <span>Settings</span>
+      </a>
+    </li>
+  </ul>
+
+  <a routerLink="/help-support" routerLinkActive="nav-link--active" (click)="closeMobileNav()" class="nav-link nav-link--bottom">
+    <span class="material-symbols-outlined">help</span>
+    <span>Help &amp; Support</span>
+  </a>
+</nav>
+
+<!-- Top bar (desktop) -->
+<header class="topbar">
+  <div class="topbar-spacer"></div>
+  <div class="topbar-actions">
+    <button class="icon-btn" aria-label="Notifications">
+      <span class="material-symbols-outlined">notifications</span>
+    </button>
+    <button class="icon-btn" aria-label="Toggle theme">
+      <span class="material-symbols-outlined">contrast</span>
+    </button>
+    <div class="divider"></div>
+    <div class="profile-menu-wrapper">
+      <button class="profile-chip" (click)="toggleProfileMenu()">
+        <span class="profile-info">
+          <span class="profile-username">{{ user?.username }}</span>
+        </span>
+        <span class="material-symbols-outlined profile-caret">expand_more</span>
+      </button>
+      <div class="profile-dropdown" *ngIf="profileMenuOpen()">
+        <a routerLink="/settings/profile" class="dropdown-item" (click)="profileMenuOpen.set(false)">
+          <span class="material-symbols-outlined">person</span>
+          Profile
+        </a>
+        <a routerLink="/settings" class="dropdown-item" (click)="profileMenuOpen.set(false)">
+          <span class="material-symbols-outlined">settings</span>
+          Settings
+        </a>
+        <button class="dropdown-item dropdown-item--danger" (click)="logout()">
+          <span class="material-symbols-outlined">logout</span>
+          Logout
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Main content -->
+<main class="main-content">
+  <router-outlet></router-outlet>
+</main>

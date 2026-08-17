@@ -1,0 +1,59 @@
+<div class="review-wrapper" *ngIf="tier() as t">
+  <a routerLink="/payments/select" class="back-link">
+    <span class="material-symbols-outlined icon-sm">arrow_back</span>
+    Back to Selection
+  </a>
+
+  <div class="page-header">
+    <h1 class="page-title">Review &amp; Pay</h1>
+    <span class="material-symbols-outlined lock-icon">lock</span>
+  </div>
+
+  <div class="card-surface summary-card">
+    <h2 class="card-title">Order Summary</h2>
+    <div class="summary-row">
+      <span>{{ t.kWh }} kWh Energy Package</span>
+      <span>${{ t.price.toFixed(2) }}</span>
+    </div>
+    <div class="summary-row">
+      <span>Estimated Tax</span>
+      <span>$0.00</span>
+    </div>
+    <div class="summary-divider"></div>
+    <div class="summary-row summary-row--total">
+      <span>Total</span>
+      <span>${{ t.price.toFixed(2) }}</span>
+    </div>
+  </div>
+
+  <!-- Card Payment Method -->
+  <ng-container *ngIf="paymentMethod() === 'card'; else otherPayment">
+    <div class="card-surface">
+      <h2 class="card-title">Card Payment</h2>
+      <app-stripe-card-payment></app-stripe-card-payment>
+    </div>
+  </ng-container>
+
+  <!-- Other Payment Methods -->
+  <ng-template #otherPayment>
+    <div class="card-surface method-card">
+      <div class="method-header">
+        <h2 class="card-title">Payment Method</h2>
+        <a routerLink="/payments/select" class="edit-link">Edit</a>
+      </div>
+      <div class="method-row">
+        <span class="material-symbols-outlined method-icon">credit_card</span>
+        <span class="method-label">{{ paymentMethodLabel() }}</span>
+        <span class="material-symbols-outlined check-icon">check_circle</span>
+      </div>
+    </div>
+
+    <button class="btn-primary complete-btn" (click)="completePurchase()" [disabled]="processing()">
+      {{ processing() ? 'Processing...' : 'Complete Purchase' }}
+    </button>
+    <p class="secure-note">
+      <span class="material-symbols-outlined icon-sm">encrypted</span>
+      Secure encrypted transaction
+    </p>
+  </ng-template>
+</div>

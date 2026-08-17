@@ -1,0 +1,40 @@
+<div class="marketplace-wrapper">
+  <div class="page-header">
+    <h1 class="page-title">Energy Marketplace</h1>
+    <p class="page-subtitle">Purchase kWh to power your mining operations.</p>
+  </div>
+
+  <div class="tiers-grid">
+    <div
+      class="card-surface tier-card"
+      *ngFor="let tier of tiers"
+      [class.tier-card--popular]="tier.popular"
+    >
+      <span class="popular-badge" *ngIf="tier.popular">Most Popular</span>
+
+      <span class="material-symbols-outlined tier-icon">bolt</span>
+
+      <div class="tier-amount">
+        <span class="tier-number">{{ tier.kWh }}</span>
+        <span class="tier-unit">kWh</span>
+      </div>
+      <div class="tier-name">{{ tier.name }}</div>
+
+      <div class="tier-price">${{ tier.price }}</div>
+
+      <div class="tier-duration">
+        <span class="material-symbols-outlined icon-sm">schedule</span>
+        Estimated Duration: {{ tier.durationDays }} Days
+      </div>
+
+      <button
+        [class]="tier.popular ? 'btn-primary' : 'btn-secondary'"
+        class="tier-buy-btn"
+        (click)="purchase(tier)"
+      >
+        Purchase
+        <span class="material-symbols-outlined icon-sm">arrow_forward</span>
+      </button>
+    </div>
+  </div>
+</div>

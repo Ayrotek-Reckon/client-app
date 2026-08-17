@@ -1,0 +1,162 @@
+<div class="wallets-wrapper">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Wallets</h1>
+      <p class="page-subtitle">Manage your payout destinations for energy distribution.</p>
+    </div>
+    <div class="header-actions">
+      <a routerLink="/payments/withdraw" class="btn-secondary">
+        <span class="material-symbols-outlined icon-sm">arrow_upward</span>
+        Withdraw
+      </a>
+      <button class="btn-primary" (click)="openAddModal()">
+        <span class="material-symbols-outlined icon-sm">add</span>
+        Add New Wallet
+      </button>
+    </div>
+  </div>
+
+  <div class="farm-banner" *ngIf="farm() as f">
+    <span class="material-symbols-outlined">dns</span>
+    Farm <strong>{{ f.name }}</strong>
+  </div>
+  <div class="loading-banner" *ngIf="farmsLoading() && !farm()">Loading farm...</div>
+  <div class="error-banner" *ngIf="farmsError() || error()">{{ farmsError() || error() }}</div>
+
+  <div class="loading-state" *ngIf="isLoading()">
+    <div class="spinner"></div>
+    <p>Loading wallets...</p>
+  </div>
+
+  <!-- Wallets grid -->
+  <div class="wallets-grid" *ngIf="!isLoading() && wallets().length > 0">
+    <div class="card-surface wallet-card" *ngFor="let wallet of wallets()">
+      <div class="wallet-card-top">
+        <div class="wallet-identity">
+          <div class="wallet-icon-box">
+            <span class="material-symbols-outlined">{{ iconFor(wallet.coin) }}</span>
+          </div>
+          <div>
+            <h3 class="wallet-name">{{ wallet.name }}</h3>
+            <p class="wallet-coin">{{ wallet.coin }}</p>
+          </div>
+        </div>
+        <span class="status-badge status-badge--success" *ngIf="defaultWalletId() === wallet.id">Default</span>
+      </div>
+
+      <div class="wallet-address-box">
+        <span class="wallet-address">{{ shortAddress(wallet.wal) }}</span>
+        <button class="icon-btn-sm" (click)="copyAddress(wallet.wal)" title="Copy Address">
+          <span class="material-symbols-outlined icon-sm">content_copy</span>
+        </button>
+      </div>
+
+      <div class="wallet-actions">
+        <button
+          class="btn-secondary wallet-action-btn"
+          [disabled]="defaultWalletId() === wallet.id"
+          (click)="setDefault(wallet.id)"
+        >
+          {{ defaultWalletId() === wallet.id ? 'Default Set' : 'Set Default' }}
+        </button>
+        <button class="icon-btn-sm icon-btn-sm--danger" (click)="openDeleteModal(wallet)" title="Remove Wallet">
+          <span class="material-symbols-outlined icon-sm">delete</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty state -->
+  <div class="card-surface empty-state" *ngIf="!isLoading() && wallets().length === 0 && farm()">
+    <span class="material-symbols-outlined empty-icon">account_balance_wallet</span>
+    <h3>No Wallets Configured</h3>
+    <p>You haven't added any payout wallets yet. Add a wallet to receive your energy market distributions.</p>
+    <button class="btn-primary" (click)="openAddModal()">
+      <span class="material-symbols-outlined icon-sm">add</span>
+      Add Your First Wallet
+    </button>
+  </div>
+
+  <!-- Add Wallet Modal -->
+  <div class="modal-overlay" *ngIf="showAddModal()" (click)="closeAddModal()">
+    <div class="card-surface modal-panel" (click)="$event.stopPropagation()">
+      <h2 class="modal-title">Add New Wallet</h2>
+
+      <div class="error-banner" *ngIf="saveError()">{{ saveError() }}</div>
+
+      <div class="form-group">
+        <label for="coin">Coin / Ticker</label>
+        <select
+          id="coin"
+          class="input-obsidian"
+          [ngModel]="newCoin()"
+          (ngModelChange)="selectCoin($event)"
+          [disabled]="coinsLoading() || coins().length === 0"
+        >
+          <option value="" disabled>{{ coinsLoading() ? 'Loading coins...' : 'Select coin' }}</option>
+          <option *ngFor="let coin of coins()" [value]="coin.coin">
+            {{ coin.coin }}{{ coin.name ? ' - ' + coin.name : '' }}
+          </option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="name">Wallet Name</label>
+        <input id="name" class="input-obsidian" [ngModel]="newName()" (ngModelChange)="updateWalletName($event)" placeholder="Auto-generated if left empty" />
+      </div>
+      <div class="form-group">
+        <label for="address">Wallet Address</label>
+        <input id="address" class="input-obsidian" [ngModel]="newAddress()" (ngModelChange)="newAddress.set($event)" placeholder="0x..." />
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-secondary" (click)="closeAddModal()" [disabled]="saving()">Cancel</button>
+        <button
+          class="btn-primary"
+          (click)="submitNewWallet()"
+          [disabled]="saving() || !newCoin() || !newAddress()"
+        >
+          {{ saving() ? 'Adding...' : 'Add Wallet' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Wallet Modal -->
+  <div class="modal-overlay" *ngIf="deleteCandidate() as wallet" (click)="closeDeleteModal()">
+    <div class="card-surface modal-panel modal-panel--danger" (click)="$event.stopPropagation()">
+      <div class="delete-icon">
+        <span class="material-symbols-outlined">delete</span>
+      </div>
+
+      <h2 class="modal-title">Delete Wallet</h2>
+      <p class="modal-copy">
+        Remove <strong>{{ wallet.name }}</strong> from farm wallets. This action cannot be undone.
+      </p>
+
+      <div class="delete-summary">
+        <div>
+          <span>Coin</span>
+          <strong>{{ wallet.coin }}</strong>
+        </div>
+        <div>
+          <span>Address</span>
+          <strong>{{ shortAddress(wallet.wal) }}</strong>
+        </div>
+      </div>
+
+      <div class="warning-box">
+        <span class="material-symbols-outlined icon-sm">warning</span>
+        HiveOS will reject deletion while the wallet is used by a flight sheet or worker.
+      </div>
+
+      <div class="error-banner" *ngIf="deleteError()">{{ deleteError() }}</div>
+
+      <div class="modal-actions">
+        <button class="btn-secondary" (click)="closeDeleteModal()" [disabled]="deleteInFlight()">Cancel</button>
+        <button class="btn-danger" (click)="confirmDeleteWallet()" [disabled]="deleteInFlight()">
+          {{ deleteInFlight() ? 'Deleting...' : 'Delete Wallet' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,260 @@
+<div class="user-detail-wrapper">
+  <!-- Header -->
+  <div class="detail-header">
+    <div class="header-content">
+      <div class="header-info">
+        <button [routerLink]="['/users']" class="btn-back">← Back to Users</button>
+        <h1 class="page-title" *ngIf="!isEditing()">👤 User Profile</h1>
+        <h1 class="page-title" *ngIf="isEditing()">✏️ Edit User</h1>
+      </div>
+      <button
+        *ngIf="!isEditing()"
+        (click)="toggleEdit()"
+        class="btn-edit"
+      >
+        ✏️ Edit User
+      </button>
+      <button
+        *ngIf="isEditing()"
+        (click)="toggleEdit()"
+        class="btn-cancel-edit"
+      >
+        ✕ Cancel
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-container" *ngIf="isLoading()">
+    <div class="loader">
+      <div class="loader-spin"></div>
+      <p>Loading user information...</p>
+    </div>
+  </div>
+
+  <!-- Error -->
+  <div class="error-banner" *ngIf="error()">
+    <div class="error-icon">⚠️</div>
+    <div class="error-text">
+      <strong>Error loading user</strong><br>
+      {{ error() }}
+    </div>
+  </div>
+
+  <!-- User Detail View -->
+  <div class="detail-container" *ngIf="!isLoading() && !isEditing()">
+    <!-- Profile Card -->
+    <div class="profile-card">
+      <div class="profile-header">
+        <div class="profile-avatar">{{ getInitials() }}</div>
+        <div class="profile-info">
+          <h2 class="profile-name">{{ user()?.firstName }} {{ user()?.lastName }}</h2>
+          <p class="profile-email">{{ user()?.email }}</p>
+          <div class="profile-meta">
+            <span class="role-badge" [ngClass]="'role-' + user()?.roles?.[0]">
+              {{ user()?.roles?.[0] | titlecase }}
+            </span>
+            <span class="status-badge" [ngClass]="user()?.isActive ? 'status-active' : 'status-inactive'">
+              {{ user()?.isActive ? '🟢 Active' : '🔴 Inactive' }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Information Sections -->
+    <div class="info-grid">
+      <!-- Personal Information -->
+      <div class="info-section">
+        <h3 class="section-title">📋 Personal Information</h3>
+        <div class="info-item">
+          <span class="info-label">First Name</span>
+          <span class="info-value">{{ user()?.firstName }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Last Name</span>
+          <span class="info-value">{{ user()?.lastName }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Email</span>
+          <span class="info-value">{{ user()?.email }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Email Verified</span>
+          <span class="info-value">
+            {{ user()?.emailVerified ? '✓ Yes' : '✗ No' }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Role & Permissions -->
+      <div class="info-section">
+        <h3 class="section-title">🔐 Role & Permissions</h3>
+        <div class="info-item">
+          <span class="info-label">Current Role</span>
+          <span class="info-value role-display" [ngClass]="'role-' + user()?.roles?.[0]">
+            {{ user()?.roles?.[0] | titlecase }}
+          </span>
+        </div>
+        <div class="role-description">
+          <p *ngIf="user()?.roles?.[0] === 'admin'">
+            <strong>Full system access</strong><br>
+            Can manage all users, settings, and system configurations
+          </p>
+          <p *ngIf="user()?.roles?.[0] === 'manager'">
+            <strong>Manager privileges</strong><br>
+            Can manage users and view all reports
+          </p>
+          <p *ngIf="user()?.roles?.[0] === 'user'">
+            <strong>Standard access</strong><br>
+            Can access features and manage own data
+          </p>
+          <p *ngIf="user()?.roles?.[0] === 'viewer'">
+            <strong>Read-only access</strong><br>
+            Can view reports and monitoring data
+          </p>
+        </div>
+      </div>
+
+      <!-- Account Status -->
+      <div class="info-section">
+        <h3 class="section-title">⚙️ Account Status</h3>
+        <div class="info-item">
+          <span class="info-label">Status</span>
+          <span class="info-value">
+            {{ user()?.isActive ? '🟢 Active' : '🔴 Inactive' }}
+          </span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Created Date</span>
+          <span class="info-value">{{ user()?.createdAt | date: 'MMM d, y HH:mm' }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Last Updated</span>
+          <span class="info-value">{{ user()?.updatedAt | date: 'MMM d, y HH:mm' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="detail-actions">
+      <button (click)="toggleEdit()" class="btn-edit-large">✏️ Edit User</button>
+      <button (click)="onDelete()" class="btn-delete-large">🗑️ Delete User</button>
+    </div>
+  </div>
+
+  <!-- Edit Form -->
+  <div class="form-container" *ngIf="!isLoading() && isEditing()">
+    <form [formGroup]="editForm" (ngSubmit)="onSaveChanges()" class="edit-form">
+      <div class="form-section">
+        <h2 class="section-title">📋 Personal Information</h2>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="firstName" class="form-label">First Name *</label>
+            <input
+              id="firstName"
+              type="text"
+              class="form-input"
+              formControlName="firstName"
+              [class.is-invalid]="isFieldInvalid('firstName')"
+            />
+            <div class="error-message" *ngIf="isFieldInvalid('firstName')">
+              First name is required
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="lastName" class="form-label">Last Name *</label>
+            <input
+              id="lastName"
+              type="text"
+              class="form-input"
+              formControlName="lastName"
+              [class.is-invalid]="isFieldInvalid('lastName')"
+            />
+            <div class="error-message" *ngIf="isFieldInvalid('lastName')">
+              Last name is required
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="email" class="form-label">Email *</label>
+          <input
+            id="email"
+            type="email"
+            class="form-input"
+            formControlName="email"
+            [disabled]="true"
+          />
+          <small class="form-help">Email cannot be changed</small>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h2 class="section-title">🔐 Role & Permissions</h2>
+
+        <div class="form-group">
+          <label for="roles" class="form-label">Role *</label>
+          <select
+            id="roles"
+            class="form-select"
+            formControlName="roles"
+            [class.is-invalid]="isFieldInvalid('roles')"
+          >
+            <option value="admin">Administrator</option>
+            <option value="manager">Manager</option>
+            <option value="user">User</option>
+            <option value="viewer">Viewer</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h2 class="section-title">⚙️ Status</h2>
+
+        <div class="checkbox-group">
+          <label class="checkbox-label">
+            <input
+              type="checkbox"
+              class="checkbox-input"
+              formControlName="isActive"
+            />
+            <span>User is Active</span>
+          </label>
+          <small class="checkbox-help">Inactive users cannot log in</small>
+        </div>
+
+        <div class="checkbox-group">
+          <label class="checkbox-label">
+            <input
+              type="checkbox"
+              class="checkbox-input"
+              formControlName="emailVerified"
+            />
+            <span>Email Verified</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button
+          type="submit"
+          class="btn-submit"
+          [disabled]="editForm.invalid || isSaving()"
+        >
+          {{ isSaving() ? '⏳ Saving...' : '✓ Save Changes' }}
+        </button>
+        <button
+          type="button"
+          (click)="toggleEdit()"
+          class="btn-cancel"
+          [disabled]="isSaving()"
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

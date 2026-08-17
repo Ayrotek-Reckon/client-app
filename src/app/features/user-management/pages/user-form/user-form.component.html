@@ -1,0 +1,192 @@
+<div class="user-form-wrapper">
+  <!-- Header -->
+  <div class="form-header">
+    <div class="header-content">
+      <div>
+        <h1 class="page-title">👤 {{ isEditMode ? 'Edit User' : 'Create New User' }}</h1>
+        <p class="page-subtitle">{{ isEditMode ? 'Update user information' : 'Add a new system user' }}</p>
+      </div>
+      <button [routerLink]="['/users']" class="btn-back">← Back to Users</button>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-container" *ngIf="isLoading()">
+    <div class="loader">
+      <div class="loader-spin"></div>
+      <p>Loading user information...</p>
+    </div>
+  </div>
+
+  <!-- Error -->
+  <div class="error-banner" *ngIf="error()">
+    <div class="error-icon">⚠️</div>
+    <div class="error-text">
+      <strong>Error saving user</strong><br>
+      {{ error() }}
+    </div>
+  </div>
+
+  <!-- Form Container -->
+  <div class="form-container" *ngIf="!isLoading()">
+    <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="user-form">
+      <!-- Personal Information Section -->
+      <div class="form-section">
+        <h2 class="section-title">📋 Personal Information</h2>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="firstName" class="form-label">First Name *</label>
+            <input
+              id="firstName"
+              type="text"
+              class="form-input"
+              formControlName="firstName"
+              placeholder="John"
+              [class.is-invalid]="isFieldInvalid('firstName')"
+            />
+            <div class="error-message" *ngIf="isFieldInvalid('firstName')">
+              First name is required and must be 2-50 characters
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="lastName" class="form-label">Last Name *</label>
+            <input
+              id="lastName"
+              type="text"
+              class="form-input"
+              formControlName="lastName"
+              placeholder="Doe"
+              [class.is-invalid]="isFieldInvalid('lastName')"
+            />
+            <div class="error-message" *ngIf="isFieldInvalid('lastName')">
+              Last name is required and must be 2-50 characters
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="email" class="form-label">Email *</label>
+          <input
+            id="email"
+            type="email"
+            class="form-input"
+            formControlName="email"
+            placeholder="john.doe@example.com"
+            [class.is-invalid]="isFieldInvalid('email')"
+          />
+          <div class="error-message" *ngIf="isFieldInvalid('email')">
+            Valid email address is required
+          </div>
+        </div>
+
+        <div class="form-group" *ngIf="!isEditMode">
+          <label for="password" class="form-label">Password *</label>
+          <input
+            id="password"
+            type="password"
+            class="form-input"
+            formControlName="password"
+            placeholder="Min 8 characters with uppercase, number, and special char"
+            [class.is-invalid]="isFieldInvalid('password')"
+          />
+          <div class="error-message" *ngIf="isFieldInvalid('password')">
+            Password must be at least 8 characters with uppercase, number, and special character
+          </div>
+        </div>
+      </div>
+
+      <!-- Role & Permissions Section -->
+      <div class="form-section">
+        <h2 class="section-title">🔐 Role & Permissions</h2>
+
+        <div class="form-group">
+          <label for="roles" class="form-label">Role *</label>
+          <select
+            id="roles"
+            class="form-select"
+            formControlName="roles"
+            [class.is-invalid]="isFieldInvalid('roles')"
+          >
+            <option value="">-- Select Role --</option>
+            <option value="admin">Administrator</option>
+            <option value="manager">Manager</option>
+            <option value="user">User</option>
+            <option value="viewer">Viewer</option>
+          </select>
+          <div class="error-message" *ngIf="isFieldInvalid('roles')">
+            Role is required
+          </div>
+        </div>
+
+        <div class="role-info">
+          <div class="info-box">
+            <strong>🛡️ Administrator</strong><br>
+            <small>Full system access, can manage all users and settings</small>
+          </div>
+          <div class="info-box">
+            <strong>👔 Manager</strong><br>
+            <small>Can manage users and view reports</small>
+          </div>
+          <div class="info-box">
+            <strong>👨‍💼 User</strong><br>
+            <small>Standard access to features and data</small>
+          </div>
+          <div class="info-box">
+            <strong>👁️ Viewer</strong><br>
+            <small>Read-only access to reports and monitoring</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Status Section -->
+      <div class="form-section">
+        <h2 class="section-title">⚙️ Status</h2>
+
+        <div class="checkbox-group">
+          <label class="checkbox-label">
+            <input
+              type="checkbox"
+              class="checkbox-input"
+              formControlName="isActive"
+            />
+            <span>User is Active</span>
+          </label>
+          <small class="checkbox-help">Inactive users cannot log in to the system</small>
+        </div>
+
+        <div class="checkbox-group">
+          <label class="checkbox-label">
+            <input
+              type="checkbox"
+              class="checkbox-input"
+              formControlName="emailVerified"
+            />
+            <span>Email Verified</span>
+          </label>
+          <small class="checkbox-help">User has verified their email address</small>
+        </div>
+      </div>
+
+      <!-- Form Actions -->
+      <div class="form-actions">
+        <button
+          type="submit"
+          class="btn-submit"
+          [disabled]="userForm.invalid || isSaving()"
+        >
+          {{ isSaving() ? '⏳ Saving...' : (isEditMode ? '✓ Update User' : '✓ Create User') }}
+        </button>
+        <button
+          type="button"
+          [routerLink]="['/users']"
+          class="btn-cancel"
+          [disabled]="isSaving()"
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

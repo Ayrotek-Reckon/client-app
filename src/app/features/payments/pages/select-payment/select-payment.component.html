@@ -1,0 +1,63 @@
+<div class="select-payment-wrapper" *ngIf="tier() as t">
+  <div class="breadcrumb">
+    <a routerLink="/energy">Packages</a>
+    <span class="material-symbols-outlined icon-sm">chevron_right</span>
+    <span>Checkout</span>
+  </div>
+
+  <h1 class="page-title">Select Payment Method</h1>
+  <p class="page-subtitle">
+    Choose how you would like to fund your energy contract. Institutional accounts may require additional
+    verification for large transactions.
+  </p>
+
+  <div class="checkout-grid">
+    <!-- Payment options -->
+    <div class="options-column">
+      <div
+        class="card-surface payment-option"
+        *ngFor="let opt of options"
+        [class.payment-option--selected]="selected() === opt.id"
+        (click)="select(opt.id)"
+      >
+        <div class="option-top">
+          <span class="radio" [class.radio--checked]="selected() === opt.id"></span>
+          <span class="material-symbols-outlined option-icon">{{ opt.icon }}</span>
+          <span class="option-title">{{ opt.title }}</span>
+          <div class="option-badges">
+            <span class="badge-chip" *ngFor="let b of opt.badges">{{ b }}</span>
+          </div>
+        </div>
+        <p class="option-description">{{ opt.description }}</p>
+      </div>
+    </div>
+
+    <!-- Order summary -->
+    <div class="card-surface summary-panel">
+      <h2 class="summary-title">{{ t.name }} Tier Contract</h2>
+      <div class="summary-row">
+        <span>{{ t.kWh }} kWh Allocation</span>
+        <span>${{ t.price.toFixed(2) }}</span>
+      </div>
+      <div class="summary-row">
+        <span>Network Fee</span>
+        <span>~${{ networkFee.toFixed(2) }}</span>
+      </div>
+      <div class="summary-divider"></div>
+      <div class="summary-row summary-row--total">
+        <span>Total Due</span>
+        <span>${{ total.toFixed(2) }}</span>
+      </div>
+      <p class="conversion-note">≈ {{ (total / 2700) | number:'1.3-3' }} ETH</p>
+
+      <button class="btn-primary continue-btn" (click)="continue()">
+        Continue to Review
+      </button>
+
+      <p class="secure-note">
+        <span class="material-symbols-outlined icon-sm">lock</span>
+        Secure SSL encrypted transaction
+      </p>
+    </div>
+  </div>
+</div>

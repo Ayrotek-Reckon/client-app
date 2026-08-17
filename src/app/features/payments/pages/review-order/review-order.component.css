@@ -1,0 +1,136 @@
+.review-wrapper {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: var(--lumen-space-lg) var(--lumen-space-md) var(--lumen-space-xl);
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--lumen-on-surface-variant);
+  text-decoration: none;
+  font-size: 13px;
+  margin-bottom: var(--lumen-space-lg);
+}
+
+.back-link:hover {
+  color: var(--lumen-primary);
+}
+
+.icon-sm {
+  font-size: 16px;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--lumen-space-lg);
+}
+
+.page-title {
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--lumen-on-surface);
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.lock-icon {
+  color: var(--lumen-primary);
+  opacity: 0.5;
+  font-size: 28px;
+}
+
+.summary-card,
+.method-card {
+  padding: var(--lumen-space-md);
+  margin-bottom: var(--lumen-space-md);
+}
+
+.card-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--lumen-on-surface);
+  margin: 0 0 var(--lumen-space-md);
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: var(--lumen-on-surface-variant);
+  padding: var(--lumen-space-xs) 0;
+}
+
+.summary-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+  margin: var(--lumen-space-sm) 0;
+}
+
+.summary-row--total {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--lumen-primary);
+}
+
+.method-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--lumen-space-md);
+}
+
+.edit-link {
+  font-family: var(--lumen-font-body);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--lumen-primary);
+  text-decoration: none;
+}
+
+.edit-link:hover {
+  text-decoration: underline;
+}
+
+.method-row {
+  display: flex;
+  align-items: center;
+  gap: var(--lumen-space-sm);
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: var(--lumen-radius);
+  padding: var(--lumen-space-sm) var(--lumen-space-md);
+}
+
+.method-icon {
+  color: var(--lumen-on-surface-variant);
+}
+
+.method-label {
+  flex: 1;
+  font-size: 14px;
+  color: var(--lumen-on-surface);
+}
+
+.check-icon {
+  color: var(--lumen-secondary);
+}
+
+.complete-btn {
+  width: 100%;
+  padding: var(--lumen-space-md);
+  font-size: 15px;
+  margin-top: var(--lumen-space-md);
+}
+
+.secure-note {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  justify-content: center;
+  font-size: 11px;
+  color: var(--lumen-on-surface-variant);
+  margin: var(--lumen-space-sm) 0 0;
+}

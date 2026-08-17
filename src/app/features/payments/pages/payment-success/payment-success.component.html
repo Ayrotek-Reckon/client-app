@@ -1,0 +1,28 @@
+<div class="success-wrapper" *ngIf="order() as o">
+  <div class="success-icon-wrap">
+    <span class="material-symbols-outlined success-icon">check_circle</span>
+  </div>
+
+  <h1 class="success-title">Payment Successful!</h1>
+  <p class="success-subtitle">Your {{ o.tier.kWh }} kWh of energy has been added to your account.</p>
+
+  <div class="card-surface order-card">
+    <div class="order-row">
+      <span>Order #</span>
+      <span class="mono">{{ o.orderNumber }}</span>
+    </div>
+    <div class="order-row">
+      <span>Item</span>
+      <span>{{ o.tier.kWh }} kWh Compute Energy</span>
+    </div>
+    <div class="order-row">
+      <span>Total</span>
+      <span class="text-secondary">${{ o.tier.price.toFixed(2) }}</span>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="btn-primary action-btn" (click)="goToDashboard()">Go to Dashboard</button>
+    <button class="btn-secondary action-btn" (click)="viewReceipt()">View Receipt</button>
+  </div>
+</div>
